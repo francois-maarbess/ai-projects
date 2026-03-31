@@ -10,15 +10,36 @@ st.title("🔒 My Private Company AI")
 st.markdown("Ask anything about the handbook. I only answer using your local data.")
 
 # --- 2. LOAD BRAIN (Cached so it's fast) ---
-@st.cache_resource
-def load_resources():
-    embedder = SentenceTransformer('all-MiniLM-L6-v2')
-    index = faiss.read_index("company_vault.index")
-    with open("chunks.txt", "r", encoding="utf-8") as f:
-        chunks = f.read().split("---CHUNK_SPLIT---")
-    return embedder, index, [c for c in chunks if c.strip()]
+import os
+from pathlib import Path
 
-embedder, index, chunks = load_resources()
+# --- 2. LOAD BRAIN (Auto-updates if file changes) ---
+def get_file_mtime(filepath):
+    return os.path.getmtime(filepath)
+
+# We add the file's modification time as a parameter. 
+# If the time changes, the cache resets!
+@st.cache_resource
+def load_resources(mtime):
+    embedder = SentenceTransformer('all-MiniLM-L6-v2')
+    
+    # 1. Read the raw text file
+    with open("company_handbook.txt", "r", encoding="utf-16") as f:
+        text = f.read()
+    
+    # 2. Chunk it on the fly
+    chunks = [p.strip() for p in text.split('\n\n') if p.strip()]
+    
+    # 3. Build the FAISS index in RAM (no more .index files needed!)
+    embeddings = embedder.encode(chunks)
+    index = faiss.IndexFlatL2(embeddings.shape[1])
+    index.add(np.array(embeddings).astype('float32'))
+    
+    return embedder, index, chunks
+
+# This line checks the file time and triggers the update
+current_mtime = get_file_mtime("company_handbook.txt")
+embedder, index, chunks = load_resources(current_mtime)
 
 # --- 3. THE SIDEBAR (Settings) ---
 with st.sidebar:
