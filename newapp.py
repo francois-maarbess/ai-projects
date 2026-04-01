@@ -94,8 +94,8 @@ if prompt := st.chat_input("What would you like to know?"):
     },
     {
         "role": "user", 
-        # Change {retrieved_context} to {context}
-"content": f"Context: {context}\n\nQuestion: {user_question}"
+        # Change {user_question} to {prompt}
+"content": f"Context: {context}\n\nQuestion: {prompt}"
     }
 ]
             )
