@@ -19,6 +19,16 @@ A high-performance repository demonstrating the implementation of **Llama-3.2 Vi
 * **The Tech:** FAISS Vector Store, LangChain, Python, Llama-3.3.
 * **The Function:** A "Chat with your Data" system using Retrieval-Augmented Generation. It queries local documents (`company_handbook.txt`) while maintaining 100% data privacy.
 * **Key Feature:** Engineered to handle sensitive credentials and policy data without external data leaks.
+### 📋 Prerequisites & Requirements
+To run these projects locally on your machine (e.g., Lenovo/Windows), ensure you have the following installed:
+* **Python 3.10+**
+* **FFmpeg** (Required for MoviePy video processing)
+* **Groq API Key** (Get one at [console.groq.com](https://console.groq.com))
+
+### 🚀 Quick Start
+1. **Install Dependencies:**
+   ```bash
+   pip install -r requirements.txt
 
 ## 📦 Local Installation & Setup
 1. **Clone the repository:**
